@@ -1,0 +1,532 @@
+{
+  "devices": [
+    {
+      "id": "gs4220e",
+      "name": "GigaSpire BLAST u4",
+      "model": "GS4220E",
+      "category": "router",
+      "type": "GigaSpire",
+      "description": "Tri-band Wi-Fi 6E mesh system with 2.5G WAN port",
+      "specs": {
+        "wifi": "Wi-Fi 6E (AX)",
+        "bands": "Tri-band (2.4GHz, 5GHz, 6GHz)",
+        "ports": "1x 2.5G WAN, 3x 1G LAN",
+        "mesh": "Yes"
+      }
+    },
+    {
+      "id": "gs2028e",
+      "name": "GigaSpire BLAST u6m",
+      "model": "GS2028E",
+      "category": "router",
+      "type": "GigaSpire",
+      "description": "Dual-band Wi-Fi 6E mesh extender",
+      "specs": {
+        "wifi": "Wi-Fi 6E (AX)",
+        "bands": "Dual-band (5GHz, 6GHz)",
+        "ports": "2x 1G LAN",
+        "mesh": "Yes (satellite)"
+      }
+    },
+    {
+      "id": "gs4227e",
+      "name": "GigaSpire BLAST u4x",
+      "model": "GS4227E",
+      "category": "router",
+      "type": "GigaSpire",
+      "description": "Quad-band Wi-Fi 7 flagship with 10G port",
+      "specs": {
+        "wifi": "Wi-Fi 7 (BE)",
+        "bands": "Quad-band",
+        "ports": "1x 10G WAN, 4x 2.5G LAN",
+        "mesh": "Yes"
+      }
+    },
+    {
+      "id": "844g-1",
+      "name": "GigaCenter 844G-1",
+      "model": "844G-1",
+      "category": "router",
+      "type": "GigaCenter",
+      "description": "Integrated ONT + Wi-Fi 5 router with voice ports",
+      "specs": {
+        "wifi": "Wi-Fi 5 (AC)",
+        "bands": "Dual-band (2.4GHz, 5GHz)",
+        "ports": "4x 1G LAN, 2x POTS",
+        "ont": "Integrated GPON"
+      }
+    },
+    {
+      "id": "844e-1",
+      "name": "GigaCenter 844E-1",
+      "model": "844E-1",
+      "category": "router",
+      "type": "GigaCenter",
+      "description": "Integrated ONT + Wi-Fi 6 router with voice ports",
+      "specs": {
+        "wifi": "Wi-Fi 6 (AX)",
+        "bands": "Dual-band (2.4GHz, 5GHz)",
+        "ports": "4x 1G LAN, 2x POTS",
+        "ont": "Integrated GPON"
+      }
+    },
+    {
+      "id": "854g-1",
+      "name": "GigaCenter 854G-1",
+      "model": "854G-1",
+      "category": "router",
+      "type": "GigaCenter",
+      "description": "Business-class integrated ONT + router with enhanced management",
+      "specs": {
+        "wifi": "Wi-Fi 6 (AX)",
+        "bands": "Dual-band (2.4GHz, 5GHz)",
+        "ports": "4x 1G LAN, 2x POTS",
+        "ont": "Integrated XGS-PON"
+      }
+    },
+    {
+      "id": "716ge-i",
+      "name": "ONT 716GE-I",
+      "model": "716GE-I",
+      "category": "ont",
+      "type": "ONT",
+      "description": "Indoor GPON ONT with 4 GigE ports",
+      "specs": {
+        "pon": "GPON",
+        "ports": "4x 1G LAN",
+        "power": "12V DC",
+        "form": "Indoor desktop"
+      }
+    },
+    {
+      "id": "801g",
+      "name": "ONT 801G",
+      "model": "801G",
+      "category": "ont",
+      "type": "ONT",
+      "description": "Single-port GPON ONT, compact form factor",
+      "specs": {
+        "pon": "GPON",
+        "ports": "1x 1G LAN",
+        "power": "12V DC",
+        "form": "Compact indoor"
+      }
+    },
+    {
+      "id": "803g",
+      "name": "ONT 803G",
+      "model": "803G",
+      "category": "ont",
+      "type": "ONT",
+      "description": "Outdoor GPON ONT with integrated power",
+      "specs": {
+        "pon": "GPON",
+        "ports": "1x 1G LAN",
+        "power": "PoE or 48V DC",
+        "form": "Outdoor enclosure"
+      }
+    },
+    {
+      "id": "812g-1",
+      "name": "ONT 812G-1",
+      "model": "812G-1",
+      "category": "ont",
+      "type": "ONT",
+      "description": "2-port GPON ONT with voice support",
+      "specs": {
+        "pon": "GPON",
+        "ports": "2x 1G LAN, 1x POTS",
+        "power": "12V DC",
+        "form": "Indoor desktop"
+      }
+    }
+  ],
+  "lightLevels": {
+    "gpon": {
+      "txPower": {
+        "min": 0.5,
+        "max": 5.0,
+        "unit": "dBm",
+        "warning": "Tx power outside 0.5-5.0 dBm indicates laser or fiber issue"
+      },
+      "rxPower": {
+        "excellent": { "min": -15, "max": -8 },
+        "good": { "min": -20, "max": -15 },
+        "marginal": { "min": -25, "max": -20 },
+        "poor": { "min": -28, "max": -25 },
+        "fail": { "max": -28 },
+        "unit": "dBm"
+      }
+    },
+    "xgspon": {
+      "txPower": {
+        "min": 2.0,
+        "max": 7.0,
+        "unit": "dBm",
+        "warning": "XGS-PON Tx power outside 2.0-7.0 dBm indicates issue"
+      },
+      "rxPower": {
+        "excellent": { "min": -14, "max": -8 },
+        "good": { "min": -18, "max": -14 },
+        "marginal": { "min": -24, "max": -18 },
+        "poor": { "min": -28, "max": -24 },
+        "fail": { "max": -28 },
+        "unit": "dBm"
+      }
+    }
+  },
+  "ledIndicators": [
+    {
+      "device": "GigaCenter",
+      "led": "Power",
+      "states": [
+        { "color": "green", "pattern": "solid", "meaning": "Normal operation" },
+        { "color": "green", "pattern": "blinking", "meaning": "Booting up" },
+        { "color": "red", "pattern": "solid", "meaning": "Hardware fault" },
+        { "color": "off", "pattern": "off", "meaning": "No power" }
+      ]
+    },
+    {
+      "device": "GigaCenter",
+      "led": "PON/Link",
+      "states": [
+        { "color": "green", "pattern": "solid", "meaning": "ONT registered, link up" },
+        { "color": "green", "pattern": "blinking", "meaning": "Attempting to register" },
+        { "color": "red", "pattern": "solid", "meaning": "Authentication failure or LOS" },
+        { "color": "off", "pattern": "off", "meaning": "No fiber signal detected" }
+      ]
+    },
+    {
+      "device": "GigaCenter",
+      "led": "Internet",
+      "states": [
+        { "color": "green", "pattern": "solid", "meaning": "WAN IP acquired, internet active" },
+        { "color": "green", "pattern": "blinking", "meaning": "Traffic activity" },
+        { "color": "red", "pattern": "solid", "meaning": "No WAN IP / DHCP failure" },
+        { "color": "off", "pattern": "off", "meaning": "No internet connection" }
+      ]
+    },
+    {
+      "device": "GigaCenter",
+      "led": "Wi-Fi",
+      "states": [
+        { "color": "green", "pattern": "solid", "meaning": "Wi-Fi enabled, no activity" },
+        { "color": "green", "pattern": "blinking", "meaning": "Wi-Fi traffic" },
+        { "color": "off", "pattern": "off", "meaning": "Wi-Fi disabled" }
+      ]
+    },
+    {
+      "device": "GigaSpire",
+      "led": "Status Ring",
+      "states": [
+        { "color": "white", "pattern": "solid", "meaning": "Normal operation" },
+        { "color": "white", "pattern": "pulsing", "meaning": "Booting / updating firmware" },
+        { "color": "blue", "pattern": "pulsing", "meaning": "WPS pairing mode" },
+        { "color": "amber", "pattern": "solid", "meaning": "No internet connection" },
+        { "color": "red", "pattern": "solid", "meaning": "Critical error / no backhaul" }
+      ]
+    },
+    {
+      "device": "ONT",
+      "led": "PON",
+      "states": [
+        { "color": "green", "pattern": "solid", "meaning": "Registered and linked" },
+        { "color": "green", "pattern": "blinking", "meaning": "Attempting registration" },
+        { "color": "red", "pattern": "solid", "meaning": "LOS (Loss of Signal)" },
+        { "color": "off", "pattern": "off", "meaning": "No fiber connected or power issue" }
+      ]
+    },
+    {
+      "device": "ONT",
+      "led": "LAN",
+      "states": [
+        { "color": "green", "pattern": "solid", "meaning": "Ethernet link at 1Gbps" },
+        { "color": "amber", "pattern": "solid", "meaning": "Ethernet link at 100Mbps" },
+        { "color": "green", "pattern": "blinking", "meaning": "Data activity" },
+        { "color": "off", "pattern": "off", "meaning": "No Ethernet connection" }
+      ]
+    }
+  ],
+  "errorCodes": [
+    {
+      "code": "O1",
+      "category": "ONT",
+      "severity": "critical",
+      "title": "Loss of Signal (LOS)",
+      "description": "ONT is not receiving any optical signal from the OLT",
+      "causes": [
+        "Fiber cable disconnected or damaged",
+        "Dirty fiber connector",
+        "Splice failure or break in fiber path",
+        "OLT port issue or disabled"
+      ],
+      "fixes": [
+        "Check fiber connection at ONT – ensure SC/APC connector is fully seated",
+        "Inspect fiber for visible damage, kinks, or tight bends",
+        "Clean fiber connectors with lint-free wipe",
+        "Check OLT port status in Calix Cloud",
+        "If outdoor fiber, check for storm/animal damage",
+        "May require dispatch for fiber repair"
+      ]
+    },
+    {
+      "code": "O2",
+      "category": "ONT",
+      "severity": "critical",
+      "title": "Loss of Frame (LOF)",
+      "description": "ONT receiving signal but cannot sync with OLT framing",
+      "causes": [
+        "Signal too weak (marginal Rx power)",
+        "Signal too strong (Rx overload)",
+        "OLT/ONT mismatch or incompatibility",
+        "Fiber path degradation"
+      ],
+      "fixes": [
+        "Check Rx power levels – should be between -8 and -25 dBm for GPON",
+        "If Rx power good, try rebooting ONT",
+        "Check for fiber path issues (bad splices, dirty connectors)",
+        "Verify ONT is provisioned correctly in Calix Cloud",
+        "May need attenuator if signal too strong"
+      ]
+    },
+    {
+      "code": "O3",
+      "category": "ONT",
+      "severity": "warning",
+      "title": "Signal Degraded (SD)",
+      "description": "ONT signal quality below threshold but still operational",
+      "causes": [
+        "Fiber degradation over time",
+        "Connector getting dirty",
+        "Environmental factors (temperature, moisture)",
+        "Approaching end of fiber budget"
+      ],
+      "fixes": [
+        "Check and log current Rx power levels",
+        "Clean fiber connectors",
+        "Monitor for further degradation",
+        "Schedule preventive maintenance if persistent"
+      ]
+    },
+    {
+      "code": "O4",
+      "category": "ONT",
+      "severity": "critical",
+      "title": "Registration Failure",
+      "description": "ONT cannot register/authenticate with OLT",
+      "causes": [
+        "ONT not provisioned in system",
+        "Serial number mismatch",
+        "ONT blacklisted or deactivated",
+        "Firmware incompatibility"
+      ],
+      "fixes": [
+        "Verify ONT serial number matches provisioning",
+        "Check account status – is service active?",
+        "Re-provision ONT in Calix Cloud",
+        "Check if ONT needs firmware update",
+        "Factory reset ONT if all else fails"
+      ]
+    },
+    {
+      "code": "R1",
+      "category": "Router",
+      "severity": "warning",
+      "title": "DHCP Failure",
+      "description": "Router unable to obtain WAN IP address",
+      "causes": [
+        "VLAN configuration incorrect",
+        "DHCP server unreachable",
+        "Account not properly provisioned",
+        "Upstream network issue"
+      ],
+      "fixes": [
+        "Verify WAN VLAN settings in Calix Cloud",
+        "Check ONT link status first",
+        "Reboot router to retry DHCP",
+        "Check service profile assignment",
+        "Verify no MAC address conflicts"
+      ]
+    },
+    {
+      "code": "R2",
+      "category": "Router",
+      "severity": "info",
+      "title": "Wi-Fi Interference Detected",
+      "description": "High interference on current Wi-Fi channel",
+      "causes": [
+        "Neighboring networks on same channel",
+        "Non-Wi-Fi interference (microwaves, cordless phones)",
+        "Too many devices on single band",
+        "Channel congestion"
+      ],
+      "fixes": [
+        "Enable auto channel selection in Calix Cloud",
+        "Check Wi-Fi analytics for channel recommendations",
+        "Move 2.4GHz devices to 5GHz where possible",
+        "Consider adding mesh satellite for coverage"
+      ]
+    },
+    {
+      "code": "R3",
+      "category": "Router",
+      "severity": "warning",
+      "title": "Mesh Backhaul Weak",
+      "description": "Mesh satellite has poor backhaul connection to primary",
+      "causes": [
+        "Satellite too far from primary",
+        "Physical obstructions (walls, floors)",
+        "Interference on backhaul channel",
+        "Satellite placed in dead zone"
+      ],
+      "fixes": [
+        "Move satellite closer to primary unit",
+        "Check placement – avoid metal objects, appliances",
+        "Run mesh optimization in CommandIQ",
+        "Consider wired backhaul if available"
+      ]
+    },
+    {
+      "code": "R4",
+      "category": "Router",
+      "severity": "info",
+      "title": "Firmware Update Available",
+      "description": "Newer firmware version available for device",
+      "causes": [
+        "Routine firmware release",
+        "Security patch available",
+        "Feature update"
+      ],
+      "fixes": [
+        "Schedule firmware update during off-peak hours",
+        "Verify auto-update settings in Calix Cloud",
+        "Manually trigger update if urgent (security patch)"
+      ]
+    },
+    {
+      "code": "R5",
+      "category": "Router",
+      "severity": "critical",
+      "title": "Device Offline",
+      "description": "Router not reporting to Calix Cloud",
+      "causes": [
+        "Power outage at location",
+        "ONT issue upstream",
+        "Router hardware failure",
+        "Network path issue"
+      ],
+      "fixes": [
+        "Verify power at location (call customer if needed)",
+        "Check ONT status – is it online?",
+        "If power confirmed, may need truck roll",
+        "Check for area-wide outages first"
+      ]
+    }
+  ],
+  "commonIssues": [
+    {
+      "id": "slow-wifi",
+      "title": "Slow Wi-Fi Speeds",
+      "category": "performance",
+      "symptoms": ["Speed test shows low results on Wi-Fi", "Wired speed is fine", "Intermittent slowdowns"],
+      "quickChecks": [
+        "Run speed test on wired connection to confirm issue is Wi-Fi",
+        "Check which band device is connected to (2.4GHz vs 5GHz)",
+        "Check device count on network in Calix Cloud",
+        "Review Wi-Fi analytics for interference"
+      ],
+      "resolution": "If 2.4GHz, try forcing to 5GHz. Check for interference. Consider adding mesh satellite if coverage issue."
+    },
+    {
+      "id": "no-internet",
+      "title": "No Internet Connection",
+      "category": "connectivity",
+      "symptoms": ["All devices offline", "Router shows no internet LED", "Can't reach any websites"],
+      "quickChecks": [
+        "Check PON/Link LED on ONT or GigaCenter",
+        "Check Internet LED status",
+        "Verify account is active in billing",
+        "Check Calix Cloud for device status"
+      ],
+      "resolution": "If PON light red/off, fiber issue. If Internet LED red, DHCP/provisioning issue. Start with power cycle."
+    },
+    {
+      "id": "intermittent-drops",
+      "title": "Intermittent Connection Drops",
+      "category": "connectivity",
+      "symptoms": ["Connection drops randomly", "Devices disconnect and reconnect", "Ping shows packet loss"],
+      "quickChecks": [
+        "Check Rx power history for fluctuations",
+        "Look for Wi-Fi roaming issues if mesh",
+        "Check for thermal throttling (unit hot?)",
+        "Review event logs in Calix Cloud"
+      ],
+      "resolution": "If optical levels fluctuating, possible fiber issue. If Wi-Fi only, check interference and roaming settings."
+    },
+    {
+      "id": "cant-connect-new-device",
+      "title": "New Device Won't Connect",
+      "category": "device",
+      "symptoms": ["Device sees network but won't connect", "Password error on correct password", "Connects but no internet"],
+      "quickChecks": [
+        "Verify correct SSID and password",
+        "Check if device limit reached",
+        "Try connecting to different band",
+        "Check for MAC filtering"
+      ],
+      "resolution": "Have customer forget network and reconnect. Check password in CommandIQ. Verify no MAC filtering active."
+    },
+    {
+      "id": "voip-issues",
+      "title": "Phone/VoIP Problems",
+      "category": "voice",
+      "symptoms": ["No dial tone", "Calls dropping", "Poor call quality", "One-way audio"],
+      "quickChecks": [
+        "Check phone port LED status",
+        "Verify phone is plugged into correct port (Phone 1)",
+        "Test with different phone handset",
+        "Check voice service status in provisioning"
+      ],
+      "resolution": "If no dial tone, check provisioning. If quality issues, check for QoS settings and network congestion."
+    },
+    {
+      "id": "commandiq-not-working",
+      "title": "CommandIQ App Issues",
+      "category": "app",
+      "symptoms": ["App won't connect to router", "Features not loading", "Stuck on loading screen"],
+      "quickChecks": [
+        "Verify phone is on same network as router",
+        "Check app is updated to latest version",
+        "Verify router is online in Calix Cloud",
+        "Try on Wi-Fi vs cellular"
+      ],
+      "resolution": "Force close and reopen app. If still failing, have customer uninstall/reinstall. Check router connectivity."
+    }
+  ],
+  "quickTips": [
+    {
+      "title": "Optimal Router Placement",
+      "tip": "Central location, elevated (not on floor), away from metal objects and appliances. Keep away from microwaves, baby monitors, and cordless phones."
+    },
+    {
+      "title": "5GHz vs 2.4GHz",
+      "tip": "5GHz = faster but shorter range, best for streaming/gaming near router. 2.4GHz = slower but better wall penetration, use for IoT and distant devices."
+    },
+    {
+      "title": "Reading Rx Power",
+      "tip": "GPON optimal range: -8 to -25 dBm. Above -8 = too strong (may need attenuator). Below -25 = weak signal, investigate fiber path."
+    },
+    {
+      "title": "Factory Reset",
+      "tip": "Hold reset button 10+ seconds until LEDs flash. Device returns to defaults. Will need re-provisioning after reset."
+    },
+    {
+      "title": "Fiber Connector Care",
+      "tip": "SC/APC connectors (green) are angled. Never look into connector. Clean with lint-free wipe. Push and twist to seat properly."
+    },
+    {
+      "title": "Mesh Placement",
+      "tip": "Satellites should be 25-40 feet from primary with 1-2 walls max. Too far = weak backhaul. Too close = wasted coverage overlap."
+    }
+  ]
+}

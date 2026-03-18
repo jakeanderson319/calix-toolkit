@@ -1,0 +1,904 @@
+{
+  "categories": [
+    {
+      "id": "basics",
+      "title": "Basic Checks",
+      "icon": "Wrench",
+      "description": "Power cycling, physical connections, BBU",
+      "color": "green"
+    },
+    {
+      "id": "no-internet",
+      "title": "No Internet",
+      "icon": "WifiOff",
+      "description": "Complete loss of internet connectivity",
+      "color": "red"
+    },
+    {
+      "id": "slow-speeds",
+      "title": "Slow Speeds",
+      "icon": "Gauge",
+      "description": "Internet works but speeds are poor",
+      "color": "yellow"
+    },
+    {
+      "id": "intermittent",
+      "title": "Drops/Intermittent",
+      "icon": "Activity",
+      "description": "Connection drops randomly or fluctuates",
+      "color": "amber"
+    },
+    {
+      "id": "wifi-issues",
+      "title": "Wi-Fi Problems",
+      "icon": "Wifi",
+      "description": "Wi-Fi specific issues, devices won't connect",
+      "color": "blue"
+    },
+    {
+      "id": "voice",
+      "title": "Voice/Phone",
+      "icon": "Phone",
+      "description": "VoIP, phone line, or dial tone issues",
+      "color": "purple"
+    }
+  ],
+  "trees": {
+    "basics": {
+      "start": "basics-start",
+      "nodes": {
+        "basics-start": {
+          "type": "question",
+          "text": "What basic check do you need to walk through?",
+          "options": [
+            { "label": "Power cycle equipment", "next": "power-cycle" },
+            { "label": "Check physical connections", "next": "physical-connections" },
+            { "label": "Check for outdoor BBU", "next": "bbu-check" },
+            { "label": "Verify coax/ethernet connections", "next": "cable-check" }
+          ]
+        },
+        "power-cycle": {
+          "type": "question",
+          "text": "What equipment needs to be power cycled?",
+          "options": [
+            { "label": "ONT only", "next": "power-cycle-ont" },
+            { "label": "Router/GigaCenter only", "next": "power-cycle-router" },
+            { "label": "Full stack (ONT + Router)", "next": "power-cycle-full" },
+            { "label": "Customer's device", "next": "power-cycle-device" }
+          ]
+        },
+        "power-cycle-ont": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Power Cycle ONT",
+          "steps": [
+            "Locate the ONT – usually in garage, basement, or utility closet",
+            "Unplug the power adapter from the wall (not from the ONT)",
+            "Wait 30 seconds",
+            "Plug power back in",
+            "Wait 2-3 minutes for ONT to fully boot and register",
+            "PON light should go solid green when registered"
+          ],
+          "escalation": "If ONT won't power on or PON light stays red/off after reboot, check for BBU issues or fiber problems."
+        },
+        "power-cycle-router": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Power Cycle Router/GigaCenter",
+          "steps": [
+            "Unplug the power cord from the back of the router",
+            "Wait 30 seconds (lets capacitors fully drain)",
+            "Plug power back in",
+            "Wait 2-3 minutes for full boot",
+            "All status lights should stabilize – Power, Internet, Wi-Fi green"
+          ],
+          "escalation": "If router won't power on, try different outlet. If still dead, likely hardware failure."
+        },
+        "power-cycle-full": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Full Stack Power Cycle (ONT + Router)",
+          "steps": [
+            "Unplug power from BOTH the ONT and the router",
+            "Wait 60 seconds",
+            "Plug in ONT FIRST",
+            "Wait for ONT PON light to go solid green (2-3 min)",
+            "THEN plug in the router",
+            "Wait another 2-3 minutes for router to fully boot",
+            "Check that Internet light goes green on router"
+          ],
+          "escalation": "Order matters – ONT must be online before router tries to get WAN IP. If still no internet after full power cycle, move to deeper troubleshooting."
+        },
+        "power-cycle-device": {
+          "type": "resolution",
+          "status": "info",
+          "title": "Power Cycle Customer Device",
+          "steps": [
+            "Have customer fully restart their device (not just sleep/wake)",
+            "For computers: Start menu → Restart (not Shut Down)",
+            "For phones/tablets: Power off completely, wait 10 sec, power on",
+            "For smart TVs/streaming boxes: Unplug from power for 30 sec",
+            "After reboot, try reconnecting to Wi-Fi or test internet again"
+          ],
+          "escalation": "If device still has issues after reboot, check if other devices work to isolate the problem."
+        },
+        "physical-connections": {
+          "type": "question",
+          "text": "What connection type are you checking?",
+          "options": [
+            { "label": "Fiber to ONT", "next": "check-fiber" },
+            { "label": "Ethernet ONT to router", "next": "check-ethernet-ont" },
+            { "label": "Ethernet router to device", "next": "check-ethernet-device" },
+            { "label": "Phone/voice port", "next": "check-phone-port" }
+          ]
+        },
+        "check-fiber": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "Check Fiber Connection to ONT",
+          "steps": [
+            "Locate the fiber cable – it's the thin cable with a GREEN SC/APC connector",
+            "Check that the green connector is fully seated in the ONT port",
+            "Push gently and twist to ensure it's clicked in",
+            "NEVER bend fiber cables sharply – minimum 1 inch bend radius",
+            "Look for any visible damage, kinks, or crushed sections",
+            "Do NOT look into the fiber end – laser light can damage eyes"
+          ],
+          "escalation": "If fiber is damaged or connector is broken, do NOT attempt to repair. Dispatch fiber tech."
+        },
+        "check-ethernet-ont": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Check Ethernet from ONT to Router",
+          "steps": [
+            "Locate ethernet cable running from ONT to router WAN port",
+            "Check both ends are fully clicked in (should hear/feel click)",
+            "Look for damaged or bent pins in the RJ45 connectors",
+            "Verify cable goes to WAN/Internet port on router (not LAN)",
+            "Try swapping with a known good ethernet cable if available",
+            "Check for link lights on both ONT ethernet port and router WAN port"
+          ],
+          "escalation": "If no link lights even with good cable, could be port failure on ONT or router."
+        },
+        "check-ethernet-device": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Check Ethernet from Router to Device",
+          "steps": [
+            "Verify cable is in a LAN port on router (not WAN)",
+            "Check cable is fully seated at both router and device",
+            "Look for link light on router LAN port",
+            "Try a different LAN port on the router",
+            "Try a different ethernet cable",
+            "Check device's ethernet settings aren't disabled"
+          ],
+          "escalation": "If wired connection still fails with different port and cable, test with different device to isolate."
+        },
+        "check-phone-port": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Check Phone/Voice Port Connection",
+          "steps": [
+            "Phone must be plugged into PHONE 1 port (not LAN ports)",
+            "Phone ports are typically separate and labeled differently",
+            "Use standard phone cable (RJ11) not ethernet (RJ45)",
+            "Check cable isn't damaged or pinched",
+            "Try a different phone to rule out handset issue"
+          ],
+          "escalation": "If correct port and cable verified but no dial tone, check voice service provisioning."
+        },
+        "bbu-check": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "Check for Battery Backup Unit (BBU)",
+          "steps": [
+            "Many ONT installs have a BBU mounted outside near the ONT or on exterior wall",
+            "BBU provides backup power during outages but batteries degrade over time",
+            "Locate BBU – usually a gray or beige box near fiber entry point",
+            "Check BBU status lights – red/amber usually indicates battery issue",
+            "If BBU is beeping or showing fault, battery likely needs replacement",
+            "Try bypassing BBU: unplug ONT from BBU, plug directly into wall outlet",
+            "If ONT works when bypassing BBU, the BBU/battery is the problem"
+          ],
+          "escalation": "BBU battery replacement may be customer responsibility depending on provider. Some ISPs will replace, others sell batteries. Confirm policy."
+        },
+        "cable-check": {
+          "type": "question",
+          "text": "What type of cable are you verifying?",
+          "options": [
+            { "label": "Ethernet cable", "next": "ethernet-verify" },
+            { "label": "Coax cable", "next": "coax-verify" },
+            { "label": "Phone cable", "next": "phone-cable-verify" }
+          ]
+        },
+        "ethernet-verify": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Verify Ethernet Cable",
+          "steps": [
+            "Check both RJ45 connectors for bent or pushed-in pins",
+            "Ensure plastic clip isn't broken (cable won't stay seated)",
+            "Look for cuts, kinks, or crush damage along cable",
+            "Cat5e or better recommended – Cat5 may cause issues at gigabit speeds",
+            "Cable length should not exceed 100 meters (328 feet)",
+            "Avoid running parallel to power cables (causes interference)",
+            "Test with a known good cable if available"
+          ],
+          "escalation": "If cable tests bad, replace. For in-wall runs that can't be replaced, consider MoCA or mesh alternatives."
+        },
+        "coax-verify": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Verify Coax Cable",
+          "steps": [
+            "Check connector is finger-tight on both ends",
+            "Look for corrosion on connector threads (green/white buildup)",
+            "Verify center pin isn't bent or pushed back",
+            "Check for splitters in the line – each split reduces signal",
+            "Remove any unnecessary splitters",
+            "Look for cable damage – kinks, crush points, or weathering"
+          ],
+          "escalation": "Coax signal issues often require signal level meter to diagnose properly."
+        },
+        "phone-cable-verify": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Verify Phone Cable (RJ11)",
+          "steps": [
+            "Phone cables use RJ11 connectors (smaller than ethernet RJ45)",
+            "Check connectors aren't cracked or broken",
+            "Verify cable clicks securely into phone and router ports",
+            "Try a different phone cable – they fail more often than you'd think",
+            "Keep phone cables away from power cables and routers (reduces interference)"
+          ],
+          "escalation": "If verified cable and still no dial tone, move to voice service troubleshooting."
+        }
+      }
+    },
+    "no-internet": {
+      "start": "check-lights",
+      "nodes": {
+        "check-lights": {
+          "type": "question",
+          "text": "What's the status of the PON/Link light on the ONT or GigaCenter?",
+          "help": "This is usually the second light from the top. It indicates fiber connectivity.",
+          "options": [
+            { "label": "Green (solid)", "next": "check-internet-led" },
+            { "label": "Green (blinking)", "next": "pon-registering" },
+            { "label": "Red", "next": "pon-los" },
+            { "label": "Off", "next": "check-power" }
+          ]
+        },
+        "check-power": {
+          "type": "question",
+          "text": "Is the Power light on?",
+          "options": [
+            { "label": "Yes, power is on", "next": "pon-no-signal" },
+            { "label": "No, unit is dark", "next": "power-issue" }
+          ]
+        },
+        "power-issue": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Power Issue",
+          "steps": [
+            "Check if power cable is connected securely",
+            "Verify outlet has power (test with another device)",
+            "Try a different outlet",
+            "Check for tripped breaker or GFI outlet",
+            "If using power strip, bypass and plug directly to wall"
+          ],
+          "escalation": "If power confirmed at outlet but unit won't power on, likely hardware failure. Schedule tech dispatch."
+        },
+        "pon-no-signal": {
+          "type": "resolution",
+          "status": "critical",
+          "title": "No Fiber Signal Detected",
+          "steps": [
+            "Check fiber cable connection at ONT (green SC/APC connector)",
+            "Ensure connector is fully seated – push and twist",
+            "Inspect fiber for visible damage or tight bends",
+            "Check Calix Cloud for OLT port status"
+          ],
+          "escalation": "If fiber connected properly and no visible damage, likely fiber path issue. Create ticket for fiber team."
+        },
+        "pon-los": {
+          "type": "resolution",
+          "status": "critical",
+          "title": "Loss of Signal (LOS)",
+          "steps": [
+            "Fiber signal not reaching ONT",
+            "Check fiber connection – reseat green connector",
+            "Inspect visible fiber run for damage",
+            "Check Calix Cloud Rx power if available"
+          ],
+          "escalation": "LOS typically indicates fiber break or OLT issue. Check for area outages. If isolated, dispatch fiber tech."
+        },
+        "pon-registering": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "ONT Attempting to Register",
+          "steps": [
+            "ONT sees signal but can't complete registration",
+            "Wait 2-3 minutes for registration to complete",
+            "If persists, check provisioning in Calix Cloud",
+            "Verify ONT serial number matches account",
+            "Try rebooting ONT (unplug power 30 sec)"
+          ],
+          "escalation": "If still blinking after reboot and provisioning verified, may be OLT issue or ONT fault."
+        },
+        "check-internet-led": {
+          "type": "question",
+          "text": "Good – PON link is up. What's the Internet/WAN light showing?",
+          "options": [
+            { "label": "Green (solid or blinking)", "next": "internet-led-good" },
+            { "label": "Red", "next": "dhcp-failure" },
+            { "label": "Off", "next": "dhcp-failure" }
+          ]
+        },
+        "dhcp-failure": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "DHCP/WAN IP Failure",
+          "steps": [
+            "ONT link is good but router not getting WAN IP",
+            "Check service profile in Calix Cloud",
+            "Verify VLAN configuration is correct",
+            "Check account status – is billing active?",
+            "Reboot router to retry DHCP"
+          ],
+          "escalation": "If provisioning looks correct and reboot doesn't help, escalate to provisioning team."
+        },
+        "internet-led-good": {
+          "type": "question",
+          "text": "Internet light is green. Is this affecting all devices or just one?",
+          "options": [
+            { "label": "All devices", "next": "all-devices-down" },
+            { "label": "Just one device", "next": "single-device" },
+            { "label": "Only Wi-Fi devices", "next": "wifi-only-down" }
+          ]
+        },
+        "all-devices-down": {
+          "type": "resolution",
+          "status": "action",
+          "title": "All Devices Down Despite Good LEDs",
+          "steps": [
+            "Router appears online but no traffic passing",
+            "Check Calix Cloud – verify management connectivity",
+            "Try pinging router gateway (usually 192.168.1.1)",
+            "Full power cycle: unplug ONT and router, wait 60 sec, plug ONT first, wait for green lights, then router"
+          ],
+          "escalation": "If power cycle doesn't resolve, check for firmware issues or escalate for deeper diagnostics."
+        },
+        "single-device": {
+          "type": "resolution",
+          "status": "info",
+          "title": "Single Device Issue",
+          "steps": [
+            "Issue is isolated to one device – not network-wide",
+            "Restart the affected device",
+            "Forget network and reconnect with password",
+            "Check device isn't blocked in parental controls",
+            "Try connecting device to different band (2.4 vs 5GHz)"
+          ],
+          "escalation": "If device still can't connect after troubleshooting, issue is with the device itself."
+        },
+        "wifi-only-down": {
+          "type": "question",
+          "text": "Only Wi-Fi devices affected. Can wired devices connect?",
+          "options": [
+            { "label": "Yes, wired works fine", "next": "wifi-disabled" },
+            { "label": "No wired devices to test", "next": "wifi-disabled" }
+          ]
+        },
+        "wifi-disabled": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Wi-Fi Issue – Check Configuration",
+          "steps": [
+            "Check if Wi-Fi LED is on",
+            "Verify Wi-Fi isn't disabled in CommandIQ or Calix Cloud",
+            "Check if SSID is broadcasting (can devices see network?)",
+            "Reboot router to reset Wi-Fi radios"
+          ],
+          "escalation": "If Wi-Fi still not working after reboot and settings verified, may need firmware update or replacement."
+        }
+      }
+    },
+    "slow-speeds": {
+      "start": "test-type",
+      "nodes": {
+        "test-type": {
+          "type": "question",
+          "text": "Is the slowness on Wi-Fi, wired, or both?",
+          "options": [
+            { "label": "Wi-Fi only", "next": "wifi-slow" },
+            { "label": "Wired only", "next": "wired-slow" },
+            { "label": "Both", "next": "both-slow" }
+          ]
+        },
+        "wifi-slow": {
+          "type": "question",
+          "text": "What speeds are they seeing on Wi-Fi vs their plan speed?",
+          "help": "Have them run speedtest.net on Wi-Fi",
+          "options": [
+            { "label": "Under 50% of plan", "next": "wifi-very-slow" },
+            { "label": "50-80% of plan", "next": "wifi-moderate-slow" },
+            { "label": "Over 80% of plan", "next": "wifi-acceptable" }
+          ]
+        },
+        "wifi-very-slow": {
+          "type": "question",
+          "text": "What band is their device connected to?",
+          "help": "Check in Wi-Fi settings or CommandIQ",
+          "options": [
+            { "label": "2.4GHz", "next": "move-to-5ghz" },
+            { "label": "5GHz", "next": "check-wifi-interference" },
+            { "label": "Unknown", "next": "check-wifi-interference" }
+          ]
+        },
+        "move-to-5ghz": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Move Device to 5GHz Band",
+          "steps": [
+            "2.4GHz is limited to ~50-100Mbps actual throughput",
+            "Have customer connect to 5GHz network if available",
+            "If separate SSIDs, connect to the 5G one",
+            "If same SSID, forget network and reconnect closer to router",
+            "Check Wi-Fi analytics for band steering recommendations"
+          ],
+          "escalation": "If 5GHz not reaching device, may need mesh satellite for coverage."
+        },
+        "check-wifi-interference": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Check Wi-Fi Interference",
+          "steps": [
+            "Check Calix Cloud Wi-Fi analytics for interference",
+            "Look for neighboring networks on same channel",
+            "Enable auto channel selection if not already",
+            "Check router placement – move away from metal, appliances",
+            "Consider channel width – 40MHz vs 80MHz"
+          ],
+          "escalation": "If interference persists after optimization, customer may be in high-density Wi-Fi area. Consider mesh or wired backhaul."
+        },
+        "wifi-moderate-slow": {
+          "type": "resolution",
+          "status": "info",
+          "title": "Wi-Fi Performance Within Normal Range",
+          "steps": [
+            "50-80% of plan speed on Wi-Fi is generally acceptable",
+            "Wi-Fi overhead typically reduces speeds by 20-40%",
+            "Check distance from router",
+            "Verify no bandwidth-heavy activities (large downloads, streaming on multiple devices)"
+          ],
+          "escalation": "Set expectations. For full speeds, recommend wired connection or consider upgrading to Wi-Fi 6 equipment."
+        },
+        "wifi-acceptable": {
+          "type": "resolution",
+          "status": "success",
+          "title": "Wi-Fi Performance is Good",
+          "steps": [
+            "Over 80% of plan speed on Wi-Fi is excellent",
+            "This is expected performance",
+            "If customer still unhappy, discuss plan upgrade options"
+          ],
+          "escalation": "No technical issue. May be expectation management or need for faster plan."
+        },
+        "wired-slow": {
+          "type": "question",
+          "text": "What speeds on wired? What's the plan speed?",
+          "options": [
+            { "label": "Significantly under plan", "next": "check-provisioning" },
+            { "label": "Close to plan but expecting more", "next": "plan-expectation" }
+          ]
+        },
+        "check-provisioning": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "Check Provisioning and ONT Levels",
+          "steps": [
+            "Verify speed tier in Calix Cloud matches account",
+            "Check Rx power levels – poor signal affects throughput",
+            "Verify customer is testing with Gigabit-capable device",
+            "Check Ethernet cable quality (Cat5e or better needed)",
+            "Run speed test from Calix Cloud if available"
+          ],
+          "escalation": "If provisioning correct and levels good, may need deeper network diagnostics."
+        },
+        "plan-expectation": {
+          "type": "resolution",
+          "status": "info",
+          "title": "Plan Speed Expectations",
+          "steps": [
+            "Confirm what plan speed they're paying for",
+            "Speeds are 'up to' not guaranteed",
+            "Check if they're getting at least 80% of plan on wired",
+            "Verify overhead on connection type"
+          ],
+          "escalation": "No technical issue if hitting close to plan speed. Discuss upgrade if customer needs more."
+        },
+        "both-slow": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "Overall Connection Slow",
+          "steps": [
+            "Issue likely at ONT or network level, not Wi-Fi",
+            "Check Rx power levels in Calix Cloud",
+            "Verify service profile and speed tier",
+            "Check for network congestion at OLT level",
+            "Reboot ONT and router"
+          ],
+          "escalation": "If levels and provisioning good, escalate to network team for path analysis."
+        }
+      }
+    },
+    "intermittent": {
+      "start": "drop-frequency",
+      "nodes": {
+        "drop-frequency": {
+          "type": "question",
+          "text": "How often is the connection dropping?",
+          "options": [
+            { "label": "Multiple times per day", "next": "frequent-drops" },
+            { "label": "Once a day or less", "next": "occasional-drops" },
+            { "label": "Random – no pattern", "next": "check-pattern" }
+          ]
+        },
+        "frequent-drops": {
+          "type": "question",
+          "text": "Is it all devices or specific devices dropping?",
+          "options": [
+            { "label": "All devices", "next": "check-ont-logs" },
+            { "label": "Specific devices", "next": "roaming-issue" },
+            { "label": "Only Wi-Fi devices", "next": "wifi-drops" }
+          ]
+        },
+        "check-ont-logs": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "Check ONT Event Logs",
+          "steps": [
+            "Pull event logs from Calix Cloud",
+            "Look for LOS, LOF, or dying gasp events",
+            "Check Rx power history for fluctuations",
+            "Look for times matching customer's reported drops"
+          ],
+          "escalation": "If logs show optical events, fiber path issue. If dying gasp, power issue at location."
+        },
+        "roaming-issue": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Possible Roaming Issue",
+          "steps": [
+            "If mesh setup, devices may be bouncing between units",
+            "Check roaming settings in Calix Cloud",
+            "Enable/adjust band steering",
+            "Consider reducing satellite count if oversaturated",
+            "Check backhaul strength between units"
+          ],
+          "escalation": "If roaming settings don't help, may need to adjust mesh topology or add wired backhaul."
+        },
+        "wifi-drops": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Wi-Fi Specific Drops",
+          "steps": [
+            "Check Wi-Fi analytics for interference spikes",
+            "Look for DFS events (radar detection on 5GHz)",
+            "Check for overheating – is unit hot?",
+            "Reduce channel width if congested area",
+            "Reboot router to reset Wi-Fi radios"
+          ],
+          "escalation": "If DFS events frequent, move to non-DFS channels. If overheating, check ventilation or replace unit."
+        },
+        "occasional-drops": {
+          "type": "resolution",
+          "status": "info",
+          "title": "Occasional Drops – Monitor",
+          "steps": [
+            "Document times when drops occur",
+            "Check if correlates with high-usage periods",
+            "Review event logs for that timeframe",
+            "Ensure firmware is up to date"
+          ],
+          "escalation": "If pattern emerges (same time daily), may indicate scheduled processes or external interference."
+        },
+        "check-pattern": {
+          "type": "question",
+          "text": "Any correlation with weather, time of day, or activities?",
+          "options": [
+            { "label": "Weather related", "next": "weather-drops" },
+            { "label": "Time of day pattern", "next": "time-pattern" },
+            { "label": "Truly random", "next": "random-drops" }
+          ]
+        },
+        "weather-drops": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "Weather-Related Drops",
+          "steps": [
+            "Drops during rain/wind suggest physical plant issue",
+            "Check for aerial fiber or exposed connections",
+            "Look for water intrusion at splice points",
+            "May need fiber team site visit"
+          ],
+          "escalation": "Weather-correlated issues typically require physical inspection and repair. Create dispatch ticket."
+        },
+        "time-pattern": {
+          "type": "resolution",
+          "status": "info",
+          "title": "Time-Based Pattern",
+          "steps": [
+            "Could be network congestion at peak hours",
+            "Check for scheduled tasks (backups, updates)",
+            "Review network-wide performance at those times",
+            "Consider if neighbor on same PON has heavy usage"
+          ],
+          "escalation": "If congestion issue, may need network capacity review."
+        },
+        "random-drops": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "Random Intermittent Issues",
+          "steps": [
+            "Check all connections – reseat fiber and Ethernet",
+            "Review Rx power over time for micro-fluctuations",
+            "Check for firmware update availability",
+            "Consider swap of ONT/router to rule out hardware"
+          ],
+          "escalation": "Intermittent issues are hardest to diagnose. If troubleshooting doesn't reveal cause, schedule tech for swap-out."
+        }
+      }
+    },
+    "wifi-issues": {
+      "start": "wifi-symptom",
+      "nodes": {
+        "wifi-symptom": {
+          "type": "question",
+          "text": "What's the specific Wi-Fi issue?",
+          "options": [
+            { "label": "Can't see network", "next": "cant-see-network" },
+            { "label": "Can see but won't connect", "next": "wont-connect" },
+            { "label": "Connects but no internet", "next": "connected-no-internet" },
+            { "label": "Poor coverage/range", "next": "coverage-issue" }
+          ]
+        },
+        "cant-see-network": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "Network Not Visible",
+          "steps": [
+            "Check Wi-Fi LED on router – is it on?",
+            "Verify SSID broadcast is enabled in settings",
+            "Check if Wi-Fi is disabled in CommandIQ/Calix Cloud",
+            "Try scanning from different device",
+            "Reboot router"
+          ],
+          "escalation": "If Wi-Fi appears disabled and can't enable, may be hardware or firmware issue."
+        },
+        "wont-connect": {
+          "type": "question",
+          "text": "What error do they get when trying to connect?",
+          "options": [
+            { "label": "Wrong password", "next": "password-issue" },
+            { "label": "Can't obtain IP", "next": "dhcp-device" },
+            { "label": "Connection timeout", "next": "timeout-issue" }
+          ]
+        },
+        "password-issue": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Password Verification",
+          "steps": [
+            "Look up Wi-Fi password in CommandIQ or Calix Cloud",
+            "Passwords are case-sensitive",
+            "Have customer forget network and re-enter password",
+            "Check for special characters being entered incorrectly",
+            "Can reset password from Calix Cloud if needed"
+          ],
+          "escalation": "If password correct and still failing, check for MAC filtering or device limits."
+        },
+        "dhcp-device": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Device Can't Get IP Address",
+          "steps": [
+            "Router DHCP may be exhausted",
+            "Check connected device count in Calix Cloud",
+            "Expand DHCP pool if needed",
+            "Check if device has static IP conflict",
+            "Restart device and try again"
+          ],
+          "escalation": "If DHCP pool not exhausted, may be device compatibility issue."
+        },
+        "timeout-issue": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Connection Timeout",
+          "steps": [
+            "Device may be too far from router",
+            "Move closer and try again",
+            "Check if device is blacklisted/blocked",
+            "Try connecting to 2.4GHz (better range)",
+            "Reboot both router and device"
+          ],
+          "escalation": "If still timing out at close range, may be device or router radio issue."
+        },
+        "connected-no-internet": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "Connected to Wi-Fi but No Internet",
+          "steps": [
+            "Check if other Wi-Fi devices have internet",
+            "Verify this specific device works on other networks",
+            "Check for captive portal or authentication needed",
+            "Flush DNS on device (ipconfig /flushdns on Windows)",
+            "Check parental controls aren't blocking device"
+          ],
+          "escalation": "If other devices work fine, issue is with this specific device."
+        },
+        "coverage-issue": {
+          "type": "question",
+          "text": "Where is the poor coverage?",
+          "options": [
+            { "label": "Specific room/area", "next": "dead-zone" },
+            { "label": "Throughout the house", "next": "general-weak" },
+            { "label": "Outside/detached area", "next": "outdoor-coverage" }
+          ]
+        },
+        "dead-zone": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Dead Zone in Specific Area",
+          "steps": [
+            "Check router placement – should be central",
+            "Identify obstacles (thick walls, metal, appliances)",
+            "Consider adding mesh satellite in or near dead zone",
+            "Run coverage map if available in Calix Cloud"
+          ],
+          "escalation": "Recommend mesh satellite for persistent dead zones. Check for existing mesh and placement."
+        },
+        "general-weak": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Generally Weak Coverage",
+          "steps": [
+            "Check router placement – not in basement/closet",
+            "Elevate router if on floor",
+            "Check antenna orientation if external antennas",
+            "Consider mesh system for larger homes",
+            "Verify firmware is current"
+          ],
+          "escalation": "May need mesh upgrade for adequate coverage in larger homes."
+        },
+        "outdoor-coverage": {
+          "type": "resolution",
+          "status": "info",
+          "title": "Outdoor/Detached Coverage",
+          "steps": [
+            "Standard indoor routers aren't designed for outdoor coverage",
+            "Exterior walls significantly reduce signal",
+            "Options: outdoor AP, mesh satellite in closest indoor spot, or wired connection to detached building"
+          ],
+          "escalation": "Outdoor coverage typically requires additional equipment or wired backhaul."
+        }
+      }
+    },
+    "voice": {
+      "start": "voice-symptom",
+      "nodes": {
+        "voice-symptom": {
+          "type": "question",
+          "text": "What's the phone issue?",
+          "options": [
+            { "label": "No dial tone", "next": "no-dial-tone" },
+            { "label": "Calls dropping", "next": "calls-dropping" },
+            { "label": "Poor call quality", "next": "poor-quality" },
+            { "label": "One-way audio", "next": "one-way-audio" },
+            { "label": "Can't receive calls", "next": "cant-receive" }
+          ]
+        },
+        "no-dial-tone": {
+          "type": "question",
+          "text": "Is phone connected to Phone 1 port on router?",
+          "options": [
+            { "label": "Yes, Phone 1", "next": "check-voice-service" },
+            { "label": "No, different port", "next": "wrong-port" },
+            { "label": "Not sure", "next": "check-port" }
+          ]
+        },
+        "wrong-port": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Move Phone to Correct Port",
+          "steps": [
+            "Phone should be in Phone 1 port (not LAN ports)",
+            "Phone 1 port is typically marked differently",
+            "Move phone cable to Phone 1",
+            "Wait 30 seconds, pick up and check for dial tone"
+          ],
+          "escalation": "If still no dial tone after moving to correct port, proceed to check voice service."
+        },
+        "check-port": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Verify Phone Port",
+          "steps": [
+            "Look at back of GigaCenter/ONT",
+            "Phone ports are separate from LAN ports",
+            "Usually labeled 'Phone 1' or 'Tel 1'",
+            "Move phone to Phone 1 if not already there"
+          ],
+          "escalation": "Continue to voice service check after verifying port."
+        },
+        "check-voice-service": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "Check Voice Service Provisioning",
+          "steps": [
+            "Verify voice service is active on account",
+            "Check voice line status in Calix Cloud",
+            "Look for SIP registration status",
+            "Try rebooting GigaCenter to re-register SIP",
+            "Verify phone number is provisioned correctly"
+          ],
+          "escalation": "If voice service shows active but no dial tone, may be SIP server or ATA issue. Escalate to voice team."
+        },
+        "calls-dropping": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "Calls Dropping",
+          "steps": [
+            "Check internet stability – drops affect voice",
+            "Review QoS settings – voice should be prioritized",
+            "Check for bandwidth saturation during calls",
+            "Verify SIP settings are correct",
+            "Check for router overheating"
+          ],
+          "escalation": "If internet stable but calls drop, may be SIP/codec issue. Escalate to voice team."
+        },
+        "poor-quality": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Poor Call Quality",
+          "steps": [
+            "Check for jitter and packet loss on connection",
+            "Verify QoS is enabled and prioritizing voice",
+            "Check bandwidth – is customer saturating connection?",
+            "Try reducing codec from G.711 to G.729 if applicable",
+            "Verify no SIP ALG issues (should usually be disabled)"
+          ],
+          "escalation": "If connection quality good but voice bad, may be codec or SIP server issue."
+        },
+        "one-way-audio": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "One-Way Audio",
+          "steps": [
+            "Usually caused by NAT or SIP ALG issues",
+            "Check if SIP ALG is enabled – try disabling it",
+            "Verify RTP ports aren't being blocked",
+            "Check if customer has double-NAT situation",
+            "Reboot router to clear NAT tables"
+          ],
+          "escalation": "One-way audio is typically network/NAT related. May need advanced SIP configuration."
+        },
+        "cant-receive": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "Cannot Receive Calls",
+          "steps": [
+            "Verify phone number is ported/active",
+            "Check call forwarding isn't enabled accidentally",
+            "Test calling from different number/phone",
+            "Check Do Not Disturb settings if applicable",
+            "Verify SIP registration is active"
+          ],
+          "escalation": "If can make but not receive, usually SIP registration or number routing issue."
+        }
+      }
+    }
+  }
+}
