@@ -29,6 +29,13 @@
       "color": "amber"
     },
     {
+      "id": "streaming",
+      "title": "Streaming/Buffering",
+      "icon": "Tv",
+      "description": "Buffering, freezing, or quality issues on TV/streaming",
+      "color": "cyan"
+    },
+    {
       "id": "wifi-issues",
       "title": "Wi-Fi Problems",
       "icon": "Wifi",
@@ -550,10 +557,167 @@
           "type": "question",
           "text": "Is it all devices or specific devices dropping?",
           "options": [
-            { "label": "All devices", "next": "check-ont-logs" },
+            { "label": "All devices", "next": "all-devices-start" },
             { "label": "Specific devices", "next": "roaming-issue" },
             { "label": "Only Wi-Fi devices", "next": "wifi-drops" }
           ]
+        },
+        "all-devices-start": {
+          "type": "question",
+          "text": "Check Calix Cloud – do you see any LOS/LOF events or dying gasps in the event log?",
+          "help": "Look at events from the last 24-48 hours",
+          "options": [
+            { "label": "Yes – LOS/LOF events", "next": "optical-events" },
+            { "label": "Yes – Dying gasp events", "next": "dying-gasp" },
+            { "label": "No events – device shows online", "next": "all-devices-online" }
+          ]
+        },
+        "optical-events": {
+          "type": "question",
+          "text": "Check Rx power levels – what are you seeing?",
+          "help": "GPON: Good is -8 to -25 dBm. XGS-PON: Good is -8 to -24 dBm",
+          "options": [
+            { "label": "Levels fluctuating (bouncing around)", "next": "rx-fluctuating" },
+            { "label": "Levels consistently weak (below -25 dBm)", "next": "rx-weak" },
+            { "label": "Levels look normal/stable", "next": "rx-normal-still-los" }
+          ]
+        },
+        "rx-fluctuating": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "Fluctuating Optical Levels – Fiber Path Issue",
+          "steps": [
+            "Fluctuating Rx indicates physical fiber problem",
+            "Ask customer: any recent construction, lawn work, or digging?",
+            "Check if ONT is near window (temperature swings affect fiber)",
+            "Document the Rx power range you're seeing",
+            "Check for pattern – does it correlate with time of day or weather?"
+          ],
+          "escalation": "Dispatch fiber tech. Note the Rx fluctuation pattern in ticket. Likely bad splice, connector, or damaged fiber."
+        },
+        "rx-weak": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "Weak Signal – Check Fiber Path",
+          "steps": [
+            "Weak but stable signal suggests loss in fiber path",
+            "Have customer check fiber connector at ONT – is it fully seated?",
+            "Ask about any changes – furniture moved, ONT relocated?",
+            "Check if there's a known issue on that PON/OLT"
+          ],
+          "escalation": "If connector looks good and no known issues, dispatch fiber tech. May need to clean connectors or check splices."
+        },
+        "rx-normal-still-los": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "LOS Events with Normal Levels – Intermittent Fiber Issue",
+          "steps": [
+            "This pattern suggests an intermittent connection",
+            "Could be loose connector that moves occasionally",
+            "Check for BBU – battery backup can cause issues if failing",
+            "Ask if customer has bumped or moved the ONT recently"
+          ],
+          "escalation": "Dispatch fiber tech to inspect connectors and test fiber. Note that levels look fine now but LOS events are occurring."
+        },
+        "dying-gasp": {
+          "type": "question",
+          "text": "Dying gasp = ONT lost power. Is customer aware of any power issues?",
+          "options": [
+            { "label": "Yes – they have flickering lights/power issues", "next": "customer-power-issue" },
+            { "label": "No – power seems fine", "next": "check-bbu" },
+            { "label": "Unknown", "next": "check-bbu" }
+          ]
+        },
+        "customer-power-issue": {
+          "type": "resolution",
+          "status": "info",
+          "title": "Customer Power Issue",
+          "steps": [
+            "Dying gasps are caused by power loss to the ONT",
+            "Customer has confirmed power issues at location",
+            "Recommend they contact their electric company",
+            "Suggest a UPS (battery backup) for the ONT to prevent future drops",
+            "Document the power issue as root cause"
+          ],
+          "escalation": "Not an ISP issue – customer's electrical problem. Note in ticket for future reference."
+        },
+        "check-bbu": {
+          "type": "question",
+          "text": "Does the customer have a BBU (battery backup unit) on their ONT?",
+          "help": "Usually a separate box near the ONT with a battery inside",
+          "options": [
+            { "label": "Yes – has BBU", "next": "bbu-failing" },
+            { "label": "No BBU", "next": "no-bbu-dying-gasp" },
+            { "label": "Unknown", "next": "no-bbu-dying-gasp" }
+          ]
+        },
+        "bbu-failing": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "BBU May Be Failing",
+          "steps": [
+            "Old or failing BBU can cause intermittent power issues to ONT",
+            "BBU batteries typically last 4-5 years",
+            "Have customer check BBU for any warning lights or alarms",
+            "If BBU has alarm light, battery needs replacement",
+            "Can bypass BBU temporarily: unplug BBU, plug ONT power directly into wall"
+          ],
+          "escalation": "If bypassing BBU fixes the issue, customer needs new BBU battery or can choose to remove BBU entirely."
+        },
+        "no-bbu-dying-gasp": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "Dying Gasp Without Known Power Issue",
+          "steps": [
+            "Something is cutting power to the ONT intermittently",
+            "Check if ONT is on a switched outlet (light switch controls it)",
+            "Check if outlet is shared with high-draw appliance (space heater, AC)",
+            "Have customer try different outlet if possible",
+            "Check power adapter – could be failing"
+          ],
+          "escalation": "If outlet and adapter seem fine, may need truck roll to inspect power setup."
+        },
+        "all-devices-online": {
+          "type": "question",
+          "text": "Device shows online with no events. Is the issue wired and Wi-Fi, or Wi-Fi only?",
+          "options": [
+            { "label": "Both wired and Wi-Fi drop", "next": "both-drop-no-events" },
+            { "label": "Only Wi-Fi drops, wired stays up", "next": "wifi-drops" }
+          ]
+        },
+        "both-drop-no-events": {
+          "type": "question",
+          "text": "Run a speed test from Calix Cloud during normal operation. What do you see?",
+          "options": [
+            { "label": "Speed test looks normal", "next": "speed-normal-still-drops" },
+            { "label": "Speed test shows issues", "next": "speed-test-issues" }
+          ]
+        },
+        "speed-normal-still-drops": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Intermittent Issue – Hard to Pinpoint",
+          "steps": [
+            "Connection looks healthy from our side right now",
+            "Have customer document exact times of next few drops",
+            "Set up monitoring if available – watch for events at those times",
+            "Ask about usage pattern – does it happen during heavy use?",
+            "Power cycle full stack: ONT first, wait 3 min, then router"
+          ],
+          "escalation": "If issue persists after power cycle and we can't catch it in logs, may need equipment swap to rule out hardware."
+        },
+        "speed-test-issues": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "Speed Test Showing Problems",
+          "steps": [
+            "Issue is reproducible – good for troubleshooting",
+            "Check Rx levels while speed test runs",
+            "Verify service profile matches customer's plan",
+            "Check for congestion on that PON port",
+            "Check if issue is upload, download, or both"
+          ],
+          "escalation": "If levels and provisioning look correct, escalate to network team with speed test results."
         },
         "check-ont-logs": {
           "type": "resolution",
@@ -897,6 +1061,369 @@
             "Verify SIP registration is active"
           ],
           "escalation": "If can make but not receive, usually SIP registration or number routing issue."
+        }
+      }
+    },
+    "streaming": {
+      "start": "streaming-type",
+      "nodes": {
+        "streaming-type": {
+          "type": "question",
+          "text": "What type of streaming service is having issues?",
+          "options": [
+            { "label": "IPTV (provider TV service)", "next": "iptv-issue" },
+            { "label": "OTT apps (Netflix, YouTube, etc.)", "next": "ott-issue" },
+            { "label": "Both / All streaming", "next": "all-streaming" }
+          ]
+        },
+        "iptv-issue": {
+          "type": "question",
+          "text": "Is the IPTV issue on one TV or all TVs?",
+          "options": [
+            { "label": "One TV only", "next": "iptv-one-tv" },
+            { "label": "All TVs", "next": "iptv-all-tvs" }
+          ]
+        },
+        "iptv-one-tv": {
+          "type": "question",
+          "text": "How is that STB connected?",
+          "options": [
+            { "label": "Wired (Ethernet)", "next": "iptv-wired-one" },
+            { "label": "Wi-Fi", "next": "iptv-wifi-one" },
+            { "label": "Coax/MoCA", "next": "iptv-moca-one" }
+          ]
+        },
+        "iptv-wired-one": {
+          "type": "resolution",
+          "status": "action",
+          "title": "IPTV Issue – Single Wired STB",
+          "steps": [
+            "Check Ethernet cable from STB to router – reseat both ends",
+            "Try a different Ethernet cable if available",
+            "Try a different LAN port on the router",
+            "Reboot the STB – unplug 30 sec, plug back in",
+            "Check STB for error codes or messages"
+          ],
+          "escalation": "If still buffering after cable/port swap and reboot, may be STB hardware issue or IPTV provisioning."
+        },
+        "iptv-wifi-one": {
+          "type": "question",
+          "text": "What band is the STB connected to?",
+          "help": "Check Calix Cloud connected devices list",
+          "options": [
+            { "label": "2.4GHz", "next": "stb-on-24ghz" },
+            { "label": "5GHz", "next": "stb-on-5ghz" },
+            { "label": "Can't tell / Unknown", "next": "stb-band-unknown" }
+          ]
+        },
+        "stb-on-24ghz": {
+          "type": "resolution",
+          "status": "action",
+          "title": "STB on 2.4GHz – Move to 5GHz",
+          "steps": [
+            "2.4GHz is too slow for reliable IPTV",
+            "IPTV needs consistent 15-25+ Mbps for HD",
+            "If possible, connect STB to 5GHz network",
+            "Better yet – run Ethernet to the STB for best results",
+            "If STB only supports 2.4GHz, wired is the only good option"
+          ],
+          "escalation": "IPTV over 2.4GHz Wi-Fi will always be problematic. Push for wired connection."
+        },
+        "stb-on-5ghz": {
+          "type": "question",
+          "text": "Check signal strength for the STB in Calix Cloud. How does it look?",
+          "options": [
+            { "label": "Good/Strong signal", "next": "stb-good-signal" },
+            { "label": "Weak/Poor signal", "next": "stb-weak-signal" }
+          ]
+        },
+        "stb-good-signal": {
+          "type": "resolution",
+          "status": "action",
+          "title": "STB Has Good Signal – Check Interference",
+          "steps": [
+            "Check Wi-Fi analytics for interference on the 5GHz channel",
+            "Look for DFS events that could cause brief disconnects",
+            "Check how many other devices are on 5GHz",
+            "Run speed test to STB if possible",
+            "Try rebooting both router and STB"
+          ],
+          "escalation": "If interference looks fine and signal is strong, may be IPTV service issue. Check for provider outages."
+        },
+        "stb-weak-signal": {
+          "type": "resolution",
+          "status": "action",
+          "title": "STB Has Weak Signal",
+          "steps": [
+            "STB is too far from router or has obstructions",
+            "Options: move router closer, add mesh satellite near TV, or run Ethernet",
+            "Ethernet is always the best option for IPTV",
+            "If mesh, ensure satellite has good backhaul to primary"
+          ],
+          "escalation": "Weak Wi-Fi signal to STB will cause buffering. Need better coverage or wired connection."
+        },
+        "stb-band-unknown": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Check STB Connection Details",
+          "steps": [
+            "Look up the STB MAC address in Calix Cloud",
+            "Check which band/SSID it's connected to",
+            "Check signal strength (RSSI) for the device",
+            "If on 2.4GHz or weak signal, that's likely the issue",
+            "Recommend wired connection for IPTV reliability"
+          ],
+          "escalation": "IPTV should ideally be wired. Wi-Fi is always second-best for live TV."
+        },
+        "iptv-moca-one": {
+          "type": "resolution",
+          "status": "action",
+          "title": "IPTV Over Coax/MoCA – Single STB",
+          "steps": [
+            "Check coax connection at STB and wall plate",
+            "Verify MoCA adapter has power and link lights",
+            "Check for coax splitters that might be degrading signal",
+            "MoCA needs -10 dBm to -40 dBm signal level",
+            "Try bypassing any splitters to test"
+          ],
+          "escalation": "MoCA issues usually require truck roll to check coax plant in home."
+        },
+        "iptv-all-tvs": {
+          "type": "question",
+          "text": "Check Calix Cloud – are you seeing any optical or connection events?",
+          "options": [
+            { "label": "Yes – LOS/LOF events", "next": "iptv-optical-issue" },
+            { "label": "No events – connection looks stable", "next": "iptv-stable-all" }
+          ]
+        },
+        "iptv-optical-issue": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "IPTV Issues Due to Optical Problems",
+          "steps": [
+            "LOS/LOF events will definitely affect IPTV",
+            "IPTV is more sensitive to drops than regular browsing",
+            "Check Rx power levels – document what you see",
+            "Even brief optical blips cause TV buffering/freezing",
+            "This needs fiber path investigation"
+          ],
+          "escalation": "Dispatch fiber tech. Note that IPTV is impacted by optical events. Include Rx levels and event times."
+        },
+        "iptv-stable-all": {
+          "type": "question",
+          "text": "Run a Calix Cloud speed test. What speeds are you seeing vs plan?",
+          "options": [
+            { "label": "Speeds look good", "next": "iptv-speeds-good" },
+            { "label": "Speeds are low", "next": "iptv-speeds-low" }
+          ]
+        },
+        "iptv-speeds-good": {
+          "type": "resolution",
+          "status": "action",
+          "title": "IPTV Buffering – Connection Looks Fine",
+          "steps": [
+            "Connection looks healthy from our side",
+            "Issue may be IPTV service/headend related",
+            "Check for any known IPTV outages or issues",
+            "Have customer reboot their main STB/DVR",
+            "Check if specific channels or all channels affected"
+          ],
+          "escalation": "If all channels affected and connection is good, escalate to IPTV/video team."
+        },
+        "iptv-speeds-low": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "Low Speeds Affecting IPTV",
+          "steps": [
+            "Bandwidth issue is causing IPTV buffering",
+            "Check what else is using bandwidth (downloads, other streaming)",
+            "Verify customer's speed tier – is it enough for their usage?",
+            "IPTV needs dedicated bandwidth – check QoS settings",
+            "Multiple HD streams need 25+ Mbps each"
+          ],
+          "escalation": "If speeds are provisioned correctly but low, investigate ONT/network. May need upgrade if customer is maxing out plan."
+        },
+        "ott-issue": {
+          "type": "question",
+          "text": "Is the buffering on one device or multiple devices?",
+          "options": [
+            { "label": "One device only", "next": "ott-one-device" },
+            { "label": "Multiple devices", "next": "ott-multiple" }
+          ]
+        },
+        "ott-one-device": {
+          "type": "question",
+          "text": "Is this device on Wi-Fi or wired?",
+          "options": [
+            { "label": "Wi-Fi", "next": "ott-wifi-device" },
+            { "label": "Wired", "next": "ott-wired-device" }
+          ]
+        },
+        "ott-wifi-device": {
+          "type": "question",
+          "text": "Check Calix Cloud – what band is the device on and how's the signal?",
+          "options": [
+            { "label": "2.4GHz", "next": "ott-on-24ghz" },
+            { "label": "5GHz with good signal", "next": "ott-5ghz-good" },
+            { "label": "5GHz with weak signal", "next": "ott-5ghz-weak" }
+          ]
+        },
+        "ott-on-24ghz": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Streaming Device on 2.4GHz",
+          "steps": [
+            "2.4GHz is slower and more congested",
+            "For 4K streaming, device needs 25+ Mbps consistently",
+            "Try moving device to 5GHz if it supports it",
+            "Forget the network on the device and reconnect",
+            "If device only supports 2.4GHz, move it closer to router"
+          ],
+          "escalation": "Older streaming sticks may only support 2.4GHz. Customer may need newer device or wired connection."
+        },
+        "ott-5ghz-good": {
+          "type": "resolution",
+          "status": "action",
+          "title": "5GHz Good Signal – Check Other Factors",
+          "steps": [
+            "Signal looks fine – issue may be device or app specific",
+            "Have customer restart the streaming app",
+            "Clear cache on the streaming device if possible",
+            "Check if other apps buffer or just one (Netflix vs YouTube)",
+            "Try rebooting the streaming device completely"
+          ],
+          "escalation": "If only one app buffers, likely that service's issue. If all apps, may be device problem."
+        },
+        "ott-5ghz-weak": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Weak 5GHz Signal to Streaming Device",
+          "steps": [
+            "Device is too far from router for reliable 5GHz",
+            "5GHz has shorter range than 2.4GHz",
+            "Options: move device closer, move router, add mesh satellite",
+            "If can't improve Wi-Fi, recommend Ethernet or powerline adapter"
+          ],
+          "escalation": "May need mesh satellite near the TV location for reliable streaming."
+        },
+        "ott-wired-device": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Wired Streaming Device Buffering",
+          "steps": [
+            "Wired should be reliable – check the basics",
+            "Reseat Ethernet cable at both ends",
+            "Try different LAN port on router",
+            "Check cable quality – use Cat5e or better",
+            "Run speed test from Calix Cloud to verify connection",
+            "Restart the streaming device"
+          ],
+          "escalation": "If wired device buffers and connection tests fine, likely device issue or the streaming service itself."
+        },
+        "ott-multiple": {
+          "type": "question",
+          "text": "Is this happening on both wired and Wi-Fi devices?",
+          "options": [
+            { "label": "Wi-Fi devices only", "next": "ott-wifi-only" },
+            { "label": "Both wired and Wi-Fi", "next": "ott-all-devices" }
+          ]
+        },
+        "ott-wifi-only": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Streaming Buffering – Wi-Fi Devices Only",
+          "steps": [
+            "Wi-Fi is the bottleneck, not the internet connection",
+            "Check Wi-Fi analytics for interference or congestion",
+            "How many devices are connected? Check device count",
+            "Check if devices are spread across 2.4GHz and 5GHz",
+            "Consider enabling band steering to balance load",
+            "Reboot router to reset Wi-Fi radios"
+          ],
+          "escalation": "If many devices or poor Wi-Fi coverage, may need mesh system or Wi-Fi upgrade."
+        },
+        "ott-all-devices": {
+          "type": "question",
+          "text": "Check Calix Cloud speed test and Rx levels. Any issues?",
+          "options": [
+            { "label": "Speed/levels look fine", "next": "ott-connection-fine" },
+            { "label": "Speeds are low or levels are marginal", "next": "ott-connection-issue" }
+          ]
+        },
+        "ott-connection-fine": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Connection Looks Good – Check Usage",
+          "steps": [
+            "Connection tests fine from our side",
+            "Check what else is using bandwidth (connected device list)",
+            "Large downloads or uploads can impact streaming",
+            "Multiple 4K streams need significant bandwidth",
+            "Ask: is someone gaming, video calling, or downloading?"
+          ],
+          "escalation": "May be bandwidth saturation during peak home usage. Customer might need faster plan."
+        },
+        "ott-connection-issue": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "Connection Issue Affecting All Streaming",
+          "steps": [
+            "Low speeds or weak optical levels impact everything",
+            "Check Rx levels – document what you see",
+            "Verify service profile matches customer's plan",
+            "Check for any network events or outages",
+            "Power cycle ONT and router"
+          ],
+          "escalation": "If levels bad, dispatch fiber tech. If provisioning issue, fix in Calix Cloud or escalate."
+        },
+        "all-streaming": {
+          "type": "question",
+          "text": "Is the customer's wired speed test showing expected speeds?",
+          "help": "Have them test at speedtest.net on a wired computer if possible",
+          "options": [
+            { "label": "Yes – wired speed is fine", "next": "all-streaming-wifi" },
+            { "label": "No – wired is slow too", "next": "all-streaming-connection" },
+            { "label": "Can't test wired", "next": "all-streaming-check-cloud" }
+          ]
+        },
+        "all-streaming-wifi": {
+          "type": "resolution",
+          "status": "action",
+          "title": "All Streaming Buffers – Wi-Fi Issue",
+          "steps": [
+            "Wired is fine, so internet is good – Wi-Fi is the problem",
+            "Check Wi-Fi analytics for interference",
+            "Check device placement – are streaming devices far from router?",
+            "Too many devices on one band can cause congestion",
+            "Consider mesh system for better coverage"
+          ],
+          "escalation": "This is a Wi-Fi coverage/capacity issue, not internet. May need equipment upgrade."
+        },
+        "all-streaming-connection": {
+          "type": "resolution",
+          "status": "warning",
+          "title": "All Streaming Buffers – Connection Issue",
+          "steps": [
+            "Even wired is slow – problem is before the router",
+            "Check Rx power levels in Calix Cloud",
+            "Verify speed tier and service profile",
+            "Check for outages or network events",
+            "Full power cycle: ONT first, wait 3 min, then router"
+          ],
+          "escalation": "If levels bad, fiber issue. If provisioning looks right and levels good, escalate for network investigation."
+        },
+        "all-streaming-check-cloud": {
+          "type": "resolution",
+          "status": "action",
+          "title": "Check Connection from Calix Cloud",
+          "steps": [
+            "Run speed test from Calix Cloud",
+            "Check Rx power levels",
+            "Review event log for recent issues",
+            "Check connected device list – anything hogging bandwidth?",
+            "If Cloud shows good speeds, issue is likely Wi-Fi"
+          ],
+          "escalation": "Use Cloud data to determine if it's connection or Wi-Fi issue, then follow appropriate path."
         }
       }
     }
