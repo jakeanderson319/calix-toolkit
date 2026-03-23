@@ -99,6 +99,34 @@
       }
     },
     {
+      "id": "717ge-i",
+      "name": "ONT 717GE-I",
+      "model": "717GE-I",
+      "category": "ont",
+      "type": "ONT",
+      "description": "Indoor GPON ONT with 4 GigE ports and 2.5G uplink capability",
+      "specs": {
+        "pon": "GPON",
+        "ports": "4x 1G LAN",
+        "power": "12V DC",
+        "form": "Indoor desktop"
+      }
+    },
+    {
+      "id": "717xe-i",
+      "name": "ONT 717XE-I",
+      "model": "717XE-I",
+      "category": "ont",
+      "type": "ONT",
+      "description": "Indoor XGS-PON ONT with 4 GigE ports for 10G services",
+      "specs": {
+        "pon": "XGS-PON",
+        "ports": "4x 1G LAN",
+        "power": "12V DC",
+        "form": "Indoor desktop"
+      }
+    },
+    {
       "id": "801g",
       "name": "ONT 801G",
       "model": "801G",
